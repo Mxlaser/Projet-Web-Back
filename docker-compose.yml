@@ -1,6 +1,17 @@
 services:
-  redis:
-    image: redis
-    command: ["redis-server", "--requirepass", "admin"]
+  postgres:
+    image: postgres
+    restart: always
+    container_name: projetweb-db
     ports:
-      - "6379:6379"
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: adam
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: projetweb
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
+
