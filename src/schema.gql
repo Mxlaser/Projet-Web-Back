@@ -1,0 +1,38 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type HelloResponse {
+  message: String!
+}
+
+type User {
+  id: ID!
+  email: String!
+  fullName: String!
+  role: Role!
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+type LoginResponse {
+  access_token: String!
+}
+
+type Query {
+  hello: HelloResponse!
+  users: [User!]!
+  user(id: String!): User
+  me: User
+}
+
+type Mutation {
+  login(loginInput: LoginInput!): LoginResponse
+}
+
+input LoginInput {
+  email: String!
+}

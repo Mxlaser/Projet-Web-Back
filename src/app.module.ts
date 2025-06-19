@@ -1,20 +1,25 @@
 import { Module } from '@nestjs/common';
-import { BullModule } from '@nestjs/bull';
-import { HealthModule } from './health/health.module';
+import { GraphQLModule } from '@nestjs/graphql';
+import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
+import { join } from 'path';
+import { HelloResolver } from './hello/hello.resolver';
+import { UserModule } from './user/user.module';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-        password: 'admin'
-      },
+    ConfigModule.forRoot({
+      isGlobal: true, 
     }),
-    BullModule.registerQueue({
-      name: 'health',
+    GraphQLModule.forRoot<ApolloDriverConfig>({
+      driver: ApolloDriver,
+      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      playground: true,
     }),
-    HealthModule,
+    UserModule,
+    AuthModule,
   ],
+  providers: [HelloResolver],
 })
 export class AppModule {}
