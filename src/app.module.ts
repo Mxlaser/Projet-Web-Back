@@ -6,6 +6,8 @@ import { HelloResolver } from './hello/hello.resolver';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
+import { BullModule } from '@nestjs/bull';
+import { HealthModule } from './health/health.module';
 
 @Module({
   imports: [
@@ -19,6 +21,17 @@ import { ConfigModule } from '@nestjs/config';
     }),
     UserModule,
     AuthModule,
+    BullModule.forRoot({
+      redis: {
+        host: 'localhost',
+        port: 6379,
+        password: 'admin'
+      },
+    }),
+    BullModule.registerQueue({
+      name: 'health',
+    }),
+    HealthModule,
   ],
   providers: [HelloResolver],
 })
