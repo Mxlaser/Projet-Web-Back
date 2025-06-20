@@ -5,13 +5,7 @@ import { BullModule } from '@nestjs/bull';
 import { DocumentEventsProcessor } from './document-events.processor';
 
 @Module({
-  imports: [
-    BullModule.registerQueue({ name: 'document-events' }),
-  ],
-  providers: [
-    DocumentService,
-    DocumentResolver,
-    DocumentEventsProcessor,
-  ],
+  imports: [BullModule.registerQueue({ name: 'document-events' })],
+  providers: [DocumentService, DocumentResolver, DocumentEventsProcessor],
 })
 export class DocumentModule {}

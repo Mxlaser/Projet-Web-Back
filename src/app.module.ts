@@ -13,7 +13,7 @@ import { DocumentModule } from './document/document.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true, 
+      isGlobal: true,
     }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
@@ -26,7 +26,7 @@ import { DocumentModule } from './document/document.module';
       redis: {
         host: 'localhost',
         port: 6379,
-        password: 'admin'
+        password: 'admin',
       },
     }),
     BullModule.registerQueue({

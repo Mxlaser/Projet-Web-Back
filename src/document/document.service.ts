@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, ForbiddenException } from '@nestjs/common';
 import { CreateDocumentInput } from './dto/create-document.input';
 import { Document } from './entities/document.entity';
 import { v4 as uuidv4 } from 'uuid';
@@ -13,8 +13,10 @@ export class DocumentService {
     @InjectQueue('document-events') private readonly eventQueue: Queue,
   ) {}
 
-
-  async createDocument(input: CreateDocumentInput, userId: string): Promise<Document> {
+  async createDocument(
+    input: CreateDocumentInput,
+    userId: string,
+  ): Promise<Document> {
     const newDoc: Document = {
       id: uuidv4(),
       ...input,
@@ -33,18 +35,31 @@ export class DocumentService {
     return newDoc;
   }
 
-  async getDocumentsByUser(userId: string): Promise<Document[]> {
-    return this.documents.filter(doc => doc.userId === userId);
+  getDocumentsByUser(userId: string): Document[] {
+    return this.documents.filter((doc) => doc.userId === userId);
   }
 
-  async deleteDocument(id: string): Promise<boolean> {
-    const index = this.documents.findIndex(doc => doc.id === id);
-    if (index === -1) return false;
+  async deleteDocument(
+    id: string,
+    currentUserId: string,
+    currentUserRole: string,
+  ): Promise<boolean> {
+    const doc = this.documents.find((d) => d.id === id);
+    if (!doc) return false;
 
-    const [deleted] = this.documents.splice(index, 1);
+    const isOwner = doc.userId === currentUserId;
+    const isAdmin = currentUserRole === 'admin';
+
+    if (!isOwner && !isAdmin) {
+      throw new ForbiddenException(
+        "Vous n'avez pas le droit de supprimer ce document.",
+      );
+    }
+
+    this.documents = this.documents.filter((d) => d.id !== id);
 
     await this.eventQueue.add('deleted', {
-      documentId: deleted.id,
+      documentId: doc.id,
       timestamp: new Date().toISOString(),
     });
 

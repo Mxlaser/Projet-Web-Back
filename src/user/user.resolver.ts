@@ -19,7 +19,7 @@ export class UserResolver {
   @Query(() => [User])
   async users(): Promise<User[]> {
     const users = await this.userService.findAll();
-    return users.map(user => ({
+    return users.map((user) => ({
       ...user,
       role: user.role as Role,
     }));
@@ -36,7 +36,9 @@ export class UserResolver {
   }
 
   @Mutation(() => LoginResponse, { nullable: true })
-  async login(@Args('loginInput') loginInput: LoginInput): Promise<LoginResponse | null> {
+  async login(
+    @Args('loginInput') loginInput: LoginInput,
+  ): Promise<LoginResponse | null> {
     const user = await this.authService.validateUser(loginInput.email);
     if (!user) return null;
     return this.authService.login(user);

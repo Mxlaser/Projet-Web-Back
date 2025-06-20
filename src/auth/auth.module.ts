@@ -10,7 +10,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
   imports: [
     forwardRef(() => UserModule),
     PassportModule,
-    ConfigModule, 
+    ConfigModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

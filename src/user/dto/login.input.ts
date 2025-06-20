@@ -5,5 +5,3 @@ export class LoginInput {
   @Field()
   email: string;
 }
-
-
