@@ -51,10 +51,11 @@ export class DocumentService {
     const isAdmin = currentUserRole === 'admin';
 
     if (!isOwner && !isAdmin) {
-      throw new ForbiddenException(
-        "Vous n'avez pas le droit de supprimer ce document."
-      );
+      const error = new Error("Vous n'avez pas le droit de supprimer ce document.");
+      error.name = 'ForbiddenError';
+      throw error;
     }
+
 
     this.documents = this.documents.filter((d) => d.id !== id);
 
