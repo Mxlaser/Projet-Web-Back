@@ -44,7 +44,7 @@ export class UserResolver {
 
   @Query(() => User, { nullable: true })
   @UseGuards(JwtAuthGuard)
-  async me(@CurrentUser() user: any): Promise<User | null> {
+  async me(@CurrentUser() user: { userId: string }): Promise<User | null> {
     const foundUser = await this.userService.findOne(user.userId);
     if (!foundUser) return null;
     return {
