@@ -51,7 +51,7 @@ export class DocumentService {
     const isAdmin = currentUserRole === 'admin';
 
     if (!isOwner && !isAdmin) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-assignment
       throw new ForbiddenException(
         "Vous n'avez pas le droit de supprimer ce document.",
       );
