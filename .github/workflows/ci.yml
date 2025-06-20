@@ -42,4 +42,10 @@ jobs:
 
       - name: Lint (ne bloque pas la CI)
         run: |
-          npm run lint || echo "❗ ESLint a détecté des erreurs, ma
+          npm run lint || echo "❗ ESLint a détecté des erreurs, mais la CI continue."
+
+      - name: Run tests
+        run: npm run test
+
+      - name: Build project
+        run: npm run build
