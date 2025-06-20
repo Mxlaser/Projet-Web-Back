@@ -53,7 +53,7 @@ export class DocumentService {
     if (!isOwner && !isAdmin) {
       throw new ForbiddenException(
         "Vous n'avez pas le droit de supprimer ce document."
-      ) as never;
+      );
     }
 
     this.documents = this.documents.filter((d) => d.id !== id);
