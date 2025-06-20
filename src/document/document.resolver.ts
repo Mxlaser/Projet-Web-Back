@@ -7,14 +7,17 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 import { UseGuards } from '@nestjs/common';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
 
+type CurrentUserType = {
+  userId: string;
+  role: string;
+};
+
 @Resolver(() => Document)
 export class DocumentResolver {
   constructor(private readonly documentService: DocumentService) {}
 
   @Query(() => [Document])
-  async getDocumentsByUser(
-    @Args('userId') userId: string,
-  ): Promise<Document[]> {
+  getDocumentsByUser(@Args('userId') userId: string): Document[] {
     return this.documentService.getDocumentsByUser(userId);
   }
 
@@ -29,7 +32,10 @@ export class DocumentResolver {
 
   @Mutation(() => Boolean)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  async deleteDocument(@Args('id') id: string, @CurrentUser() user: any) {
+  async deleteDocument(
+    @Args('id') id: string,
+    @CurrentUser() user: CurrentUserType,
+  ): Promise<boolean> {
     return this.documentService.deleteDocument(id, user.userId, user.role);
   }
 }
