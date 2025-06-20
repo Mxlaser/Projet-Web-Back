@@ -10,8 +10,8 @@ export class AuthService {
     private userService: UserService,
   ) {}
 
-  validateUser(email: string): User | undefined {
-    return this.userService.findByEmail(email);
+  async validateUser(email: string): Promise<User | undefined> {
+    return await this.userService.findByEmail(email);
   }
 
   login(user: User): { access_token: string } {

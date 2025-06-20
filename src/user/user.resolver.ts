@@ -15,26 +15,26 @@ export class UserResolver {
   ) {}
 
   @Query(() => [User])
-  users(): User[] {
+  async users(): Promise<User[]> {
     return this.userService.findAll();
   }
 
   @Query(() => User, { nullable: true })
-  user(@Args('id') id: string): User | undefined {
-    return this.userService.findOne(id);
+  async user(@Args('id') id: string): Promise<User | undefined> {
+    return await this.userService.findOne(id);
   }
   
   @Mutation(() => LoginResponse, { nullable: true })
-  login(@Args('loginInput') loginInput: LoginInput): LoginResponse | null {
-    const user = this.authService.validateUser(loginInput.email);
+  async login(@Args('loginInput') loginInput: LoginInput): Promise<LoginResponse | null> {
+    const user = await this.authService.validateUser(loginInput.email);
     if (!user) return null;
     return this.authService.login(user);
   }
 
   @Query(() => User, { nullable: true })
-    @UseGuards(JwtAuthGuard)
-    me(@CurrentUser() user: any): User | undefined {
-    return this.userService.findOne(user.userId);
-    }
+  @UseGuards(JwtAuthGuard)
+  async me(@CurrentUser() user: any): Promise<User | undefined> {
+    return await this.userService.findOne(user.userId);
+  }
 }
 
