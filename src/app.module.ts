@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { BullModule } from '@nestjs/bull';
 import { HealthModule } from './health/health.module';
+import { DocumentModule } from './document/document.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { HealthModule } from './health/health.module';
       name: 'health',
     }),
     HealthModule,
+    DocumentModule,
   ],
   providers: [HelloResolver],
 })

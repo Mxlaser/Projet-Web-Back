@@ -22,17 +22,34 @@ type LoginResponse {
   access_token: String!
 }
 
+type Document {
+  id: ID!
+  title: String!
+  description: String!
+  fileUrl: String!
+  userId: String!
+}
+
 type Query {
   hello: HelloResponse!
   users: [User!]!
   user(id: String!): User
   me: User
+  getDocumentsByUser(userId: String!): [Document!]!
 }
 
 type Mutation {
   login(loginInput: LoginInput!): LoginResponse
+  createDocument(input: CreateDocumentInput!, userId: String!): Document!
+  deleteDocument(id: String!): Boolean!
 }
 
 input LoginInput {
   email: String!
+}
+
+input CreateDocumentInput {
+  title: String!
+  description: String!
+  fileUrl: String!
 }
