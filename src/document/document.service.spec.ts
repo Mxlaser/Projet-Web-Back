@@ -6,7 +6,13 @@ describe('DocumentService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [DocumentService],
+      providers: [
+        DocumentService,
+        {
+          provide: 'BullQueue_document-events',
+          useValue: { add: jest.fn() },
+        },
+      ],
     }).compile();
 
     service = module.get<DocumentService>(DocumentService);
