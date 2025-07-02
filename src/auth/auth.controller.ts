@@ -33,6 +33,12 @@ interface AuthResponse {
   };
 }
 
+interface AuthenticatedRequest {
+  user: {
+    userId: string;
+  };
+}
+
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -49,6 +55,9 @@ export class AuthController {
 
     const { access_token } = this.authService.login(user);
 
+    // Récupérer l'utilisateur complet depuis Prisma pour avoir createdAt
+    const fullUser = await this.userService.findByEmail(user.email);
+
     return {
       access_token,
       user: {
@@ -56,7 +65,8 @@ export class AuthController {
         email: user.email,
         fullName: user.fullName,
         role: user.role,
-        createdAt: user.createdAt.toISOString(),
+        createdAt:
+          fullUser?.createdAt.toISOString() || new Date().toISOString(),
       },
     };
   }
@@ -77,7 +87,15 @@ export class AuthController {
       role: Role.USER,
     });
 
-    const { access_token } = this.authService.login(newUser);
+    // Convertir pour le service d'auth
+    const authUser = {
+      id: newUser.id,
+      email: newUser.email,
+      fullName: newUser.fullName,
+      role: newUser.role as Role,
+    };
+
+    const { access_token } = this.authService.login(authUser);
 
     return {
       access_token,
@@ -86,14 +104,16 @@ export class AuthController {
         email: newUser.email,
         fullName: newUser.fullName,
         role: newUser.role as Role,
-        createdAt: newUser.createdAt,
+        createdAt: newUser.createdAt.toISOString(),
       },
     };
   }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
-  async getCurrentUser(@Request() req): Promise<AuthResponse['user']> {
+  async getCurrentUser(
+    @Request() req: AuthenticatedRequest,
+  ): Promise<AuthResponse['user']> {
     const user = await this.userService.findOne(req.user.userId);
     if (!user) {
       throw new Error('User not found');
@@ -104,7 +124,7 @@ export class AuthController {
       email: user.email,
       fullName: user.fullName,
       role: user.role as Role,
-      createdAt: user.createdAt,
+      createdAt: user.createdAt.toISOString(),
     };
   }
 }
