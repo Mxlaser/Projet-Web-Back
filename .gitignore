@@ -3,3 +3,5 @@ dist/
 .env
 /generated/prisma
 yarn.lock
+
+.DS_Store

@@ -1,98 +1,216 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Projet Web - Gestion de Documents
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Application complète de gestion de documents avec backend NestJS et frontend Next.js.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## Architecture
 
-## Description
+- **Backend** : NestJS avec GraphQL, PostgreSQL, Redis, JWT
+- **Frontend** : Next.js 15 avec TypeScript, Tailwind CSS
+- **Base de données** : PostgreSQL
+- **Cache** : Redis
+- **Containerisation** : Docker & Docker Compose
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## Démarrage rapide du projet
 
-## Project setup
+### Prérequis
 
-```bash
-$ npm install
+- Node.js 22 (utilisez `nvm use 22`)
+- Docker & Docker Compose
+- Yarn
+
+### Étapes pour lancer le projet
+
+1. **Cloner le dépôt**
+
+   ```bash
+   git clone <url-du-repo>
+   cd Projet-Web
+   ```
+
+2. **Sélectionner la bonne version de Node.js**
+
+   ```bash
+   nvm use 22
+   ```
+
+3. **Installer les dépendances (Backend)**
+
+   ```bash
+   yarn install
+   ```
+
+4. **Installer les dépendances (Frontend)**
+
+   ```bash
+   cd frontend
+   yarn install
+   cd ..
+   ```
+
+5. **Créer le fichier `.env`** à la racine du projet avec :
+
+   ```env
+   DATABASE_URL="postgresql://adam:password123@localhost:5432/projetweb?schema=public"
+   REDIS_URL="redis://:admin@localhost:6379"
+   JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
+   JWT_EXPIRES_IN="1d"
+   ```
+
+6. **Démarrer tous les services avec Docker**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+7. **Appliquer les migrations Prisma**
+
+   ```bash
+   yarn prisma migrate deploy
+   ```
+
+8. **Lancer l'application en mode développement**
+
+   **Backend** (optionnel si Docker est utilisé) :
+
+   ```bash
+   yarn start:dev
+   ```
+
+   **Frontend** :
+
+   ```bash
+   cd frontend
+   yarn dev
+   ```
+
+## Accès aux applications
+
+- **Frontend** : http://localhost:3001
+- **Backend API** : http://localhost:3000
+- **GraphQL Playground** : http://localhost:3000/graphql
+
+## Fonctionnalités
+
+### Backend (NestJS)
+
+- ✅ Authentification JWT
+- ✅ Gestion des utilisateurs avec rôles
+- ✅ Upload et gestion de documents
+- ✅ API GraphQL
+- ✅ Base de données PostgreSQL
+- ✅ Cache Redis
+
+### Frontend (Next.js)
+
+- ✅ Interface d'authentification
+- ✅ Dashboard de gestion des documents
+- ✅ Upload de fichiers
+- ✅ Interface responsive
+- ✅ Gestion des rôles
+
+## Structure du projet
+
+```
+Projet-Web/
+├── src/                    # Backend NestJS
+│   ├── auth/              # Authentification
+│   ├── user/              # Gestion des utilisateurs
+│   ├── document/          # Gestion des documents
+│   └── ...
+├── frontend/              # Frontend Next.js
+│   ├── src/
+│   │   ├── app/           # Pages Next.js
+│   │   ├── components/    # Composants React
+│   │   ├── contexts/      # Contextes React
+│   │   └── lib/           # Services et utilitaires
+│   └── ...
+├── prisma/                # Schéma et migrations DB
+├── docker-compose.yml     # Configuration Docker
+└── README.md
 ```
 
-## Compile and run the project
+## Développement
+
+### Backend
 
 ```bash
-# development
-$ npm run start
+# Lancer en mode développement
+yarn start:dev
 
-# watch mode
-$ npm run start:dev
+# Tests
+yarn test
+yarn test:e2e
 
-# production mode
-$ npm run start:prod
+# Linter
+yarn lint
 ```
 
-## Run tests
+### Frontend
 
 ```bash
-# unit tests
-$ npm run test
+cd frontend
 
-# e2e tests
-$ npm run test:e2e
+# Lancer en mode développement
+yarn dev
 
-# test coverage
-$ npm run test:cov
+# Build de production
+yarn build
+
+# Tests
+yarn test
 ```
 
-## Deployment
+## Déploiement
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Avec Docker Compose
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Build et lancement de tous les services
+docker-compose up -d --build
+
+# Voir les logs
+docker-compose logs -f
+
+# Arrêter les services
+docker-compose down
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Variables d'environnement
 
-## Resources
+**Backend** (`.env`) :
 
-Check out a few resources that may come in handy when working with NestJS:
+```env
+DATABASE_URL="postgresql://adam:password123@localhost:5432/projetweb?schema=public"
+REDIS_URL="redis://:admin@localhost:6379"
+JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
+JWT_EXPIRES_IN="1d"
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+**Frontend** (`frontend/.env.local`) :
 
-## Support
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## Technologies utilisées
 
-## Stay in touch
+### Backend
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+- NestJS
+- GraphQL (Apollo Server)
+- Prisma ORM
+- PostgreSQL
+- Redis
+- JWT
+- Bull (File uploads)
 
-## License
+### Frontend
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+- Next.js 15
+- TypeScript
+- Tailwind CSS
+- React Hook Form
+- Zod
+- Axios
+- Lucide React
+- Radix UI
