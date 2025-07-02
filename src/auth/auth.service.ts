@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
-import { Role } from '../user/enums/role.enum'; // Assure-toi que ce chemin est bon
+import { Role } from '../user/enums/role.enum';
 
 @Injectable()
 export class AuthService {

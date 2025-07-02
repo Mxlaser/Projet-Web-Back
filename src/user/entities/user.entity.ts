@@ -16,7 +16,6 @@ export class User {
   role: Role;
 }
 
-// Pour que GraphQL comprenne l'enum
 registerEnumType(Role, {
   name: 'Role',
 });
