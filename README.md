@@ -21,7 +21,7 @@ Application complète de gestion de documents avec authentification, upload, et 
 
 ## ⚙️ Prérequis
 
-- Node.js 22 (via `nvm use 22`)
+- Node.js 22 (via `nvm use 22  # (ou utilisez votre version de Node)`)
 - Yarn
 - Docker & Docker Compose
 
@@ -40,11 +40,11 @@ cd Projet-Web
 
 ```bash
 # Backend
-yarn install
+npm install
 
 # Frontend
 cd frontend
-yarn install
+npm install
 cd ..
 ```
 
@@ -88,14 +88,14 @@ yarn prisma migrate deploy
 **Backend** :
 
 ```bash
-yarn start:dev
+npm start:dev
 ```
 
 **Frontend** :
 
 ```bash
 cd frontend
-yarn dev
+npm run dev
 ```
 
 ---
@@ -113,15 +113,15 @@ yarn dev
 ### Backend
 
 ```bash
-yarn test           # tests unitaires
-yarn test:e2e       # tests end-to-end
-yarn lint           # analyse statique
+npm run test           # tests unitaires
+npm run test:e2e       # tests end-to-end
+npm run lint           # analyse statique
 ```
 
 ### Frontend
 
 ```bash
-yarn test
+npm run test
 ```
 
 ---
