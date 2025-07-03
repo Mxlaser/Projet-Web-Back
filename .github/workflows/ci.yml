@@ -50,7 +50,14 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Run Postman API tests with Newman
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Start app in background
         run: |
-          npm install -g newman
-          newman run postman/ProjetWeb.postman_collection.json
+          npm run start:dev &
+          sleep 10
+
+      - name: Run Postman tests
+        run: |
+          newman run postman/collection.json
