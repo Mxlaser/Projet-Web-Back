@@ -61,11 +61,16 @@ jobs:
 
       - name: Start app in background
         run: |
-          npm run start:dev > app.log 2>&1 &
+          npm run start > app.log 2>&1 &
           for i in {1..30}; do
             nc -z localhost 3000 && echo "✅ Server is up!" && break
             echo "⏳ Waiting for server to be ready..." && sleep 1
           done
+          if ! nc -z localhost 3000; then
+            echo "❌ Server did not start in time. Dumping logs:"
+            cat app.log
+            exit 1
+          fi
 
       - name: Run Postman tests
-        run: newman run postman/ProjetWeb.postman_collection.json
+        run:
