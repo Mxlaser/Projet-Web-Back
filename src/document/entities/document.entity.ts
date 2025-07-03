@@ -16,4 +16,7 @@ export class Document {
 
   @Field()
   userId: string;
+
+  @Field()
+  createdAt: Date;
 }

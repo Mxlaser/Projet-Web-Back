@@ -25,9 +25,18 @@ jobs:
         ports:
           - 6379:6379
 
+    env:
+      DATABASE_URL: "postgresql://adam:password123@localhost:5432/projetweb"
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
+
+      - name: Create .env file
+        run: |
+          echo 'DATABASE_URL="postgresql://adam:password123@localhost:5432/projetweb"' > .env
+          echo 'JWT_SECRET="super-secret"' >> .env
+          echo 'JWT_EXPIRES_IN="1d"' >> .env
 
       - name: Use Node.js
         uses: actions/setup-node@v3
@@ -40,6 +49,9 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Apply database migrations
+        run: npx prisma migrate deploy
+
       - name: Lint (ne bloque pas la CI)
         run: |
           npm run lint || echo "❗ ESLint a détecté des erreurs, mais la CI continue."
@@ -49,3 +61,24 @@ jobs:
 
       - name: Build project
         run: npm run build
+
+      - name: Install Newman
+        run: npm install -g newman
+
+      - name: Start app in background
+        run: |
+          npm run start > app.log 2>&1 &
+          for i in {1..30}; do
+            nc -z localhost 3000 && echo "✅ Server is up!" && break
+            echo "⏳ Waiting for server to be ready..." && sleep 1
+          done
+          if ! nc -z localhost 3000; then
+            echo "❌ Server did not start in time. Dumping logs:"
+            cat app.log
+            exit 1
+          fi
+
+      - name: Run Postman tests
+        run: newman run postman/ProjetWeb.postman_collection.json
+
+      
