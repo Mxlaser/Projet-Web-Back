@@ -1,98 +1,216 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Projet Web – Gestion de Documents
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+Application complète de gestion de documents avec authentification, upload, et rôles utilisateur. Basée sur **NestJS (GraphQL)** en backend et **Next.js 15** en frontend.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🧩 Technologies
 
-## Description
+### Backend
+- NestJS + GraphQL (code-first)
+- Prisma ORM + PostgreSQL
+- Redis + BullMQ
+- JWT Auth (Passport)
+- Docker / CI GitHub Actions
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+### Frontend
+- Next.js 15 + App Router
+- TypeScript + Tailwind CSS
+- React Hook Form + Zod
+- Axios + Lucide + Radix UI
 
-## Project setup
+---
 
-```bash
-$ npm install
-```
+## ⚙️ Prérequis
 
-## Compile and run the project
+- Node.js 22 (via `nvm use 22`)
+- Yarn
+- Docker & Docker Compose
+
+---
+
+## 🚀 Lancement du projet
+
+### 1. Cloner le repo
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+git clone <repo-url>
+cd Projet-Web
 ```
 
-## Run tests
+### 2. Installer les dépendances
 
 ```bash
-# unit tests
-$ npm run test
+# Backend
+yarn install
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# Frontend
+cd frontend
+yarn install
+cd ..
 ```
 
-## Deployment
+### 3. Configurer les fichiers `.env`
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+**Backend** – `.env` à la racine :
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+```env
+DATABASE_URL="postgresql://adam:password123@localhost:5432/projetweb?schema=public"
+REDIS_URL="redis://:admin@localhost:6379"
+JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
+JWT_EXPIRES_IN="1d"
+```
+
+**Frontend** – `frontend/.env.local` :
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+
+---
+
+### 4. Lancer tous les services
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+docker-compose up -d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+---
 
-## Resources
+### 5. Appliquer les migrations Prisma
 
-Check out a few resources that may come in handy when working with NestJS:
+```bash
+yarn prisma migrate deploy
+```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+---
 
-## Support
+### 6. Lancer les apps
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Backend** :
 
-## Stay in touch
+```bash
+yarn start:dev
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+**Frontend** :
 
-## License
+```bash
+cd frontend
+yarn dev
+```
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+---
+
+## 🔗 Accès
+
+- **Frontend** : http://localhost:3001
+- **Backend API** : http://localhost:3000
+- **GraphQL Playground** : http://localhost:3000/graphql
+
+---
+
+## 🧪 Tests
+
+### Backend
+
+```bash
+yarn test           # tests unitaires
+yarn test:e2e       # tests end-to-end
+yarn lint           # analyse statique
+```
+
+### Frontend
+
+```bash
+yarn test
+```
+
+---
+
+## 📁 Structure du projet
+
+```
+Projet-Web/
+├── src/                    # Backend (NestJS)
+│   ├── auth/
+│   ├── user/
+│   ├── document/
+│   └── ...
+├── frontend/               # Frontend (Next.js)
+│   └── src/
+│       ├── app/            # Pages et routes
+│       ├── components/     # UI réutilisable
+│       ├── contexts/       # Context API
+│       └── lib/            # Services/API
+├── prisma/                 # Schéma DB
+├── postman/                # Collection API
+├── docker-compose.yml
+└── README.md
+```
+
+---
+
+## 🧪 API GraphQL
+
+### 🔐 Auth
+
+- `register(createUserInput)`
+- `login(loginInput): LoginResponse`
+- `me()`
+
+### 📄 Documents
+
+- `createDocument(input, userId)`
+- `getDocumentsByUser(userId)`
+- `deleteDocument(id)`
+
+> ⚠️ Toutes les mutations sauf `login` et `register` nécessitent un token JWT (`Authorization: Bearer xxx`)
+
+---
+
+## 📬 Tests Postman / Newman
+
+1. Importe la collection `postman/ProjetWeb.postman_collection.json` dans Postman
+2. Exécute via Newman :
+```bash
+npx newman run postman/ProjetWeb.postman_collection.json
+```
+
+---
+
+## 🐳 Docker
+
+### Build et run
+
+```bash
+docker-compose up -d --build
+```
+
+### Stopper
+
+```bash
+docker-compose down
+```
+
+---
+
+## ✅ CI GitHub Actions
+
+- Lint, test et build à chaque push/pull_request
+- Tests Postman automatisés
+- Vérification du serveur GraphQL
+
+---
+
+## 🙋‍♂️ Auteurs
+
+- Dev 1 : Backend API / Auth / Base de données
+- Dev 2 : Asynchrone, Redis, BullMQ, Tests, CI/CD
+- Dev 3 : Frontend Next.js, Auth UI, Upload UI, Intégration API
+
+---
+
+## 📌 Remarques
+
+- Le mot de passe est hashé avec `bcrypt`
+- La base est persistée via volume Docker
+- Le token JWT expire selon `JWT_EXPIRES_IN` (ex : `1d`)
