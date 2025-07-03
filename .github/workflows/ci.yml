@@ -32,6 +32,12 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Create .env file
+        run: |
+          echo 'DATABASE_URL="postgresql://adam:password123@localhost:5432/projetweb"' > .env
+          echo 'JWT_SECRET="super-secret"' >> .env
+          echo 'JWT_EXPIRES_IN="1d"' >> .env
+
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
@@ -74,3 +80,5 @@ jobs:
 
       - name: Run Postman tests
         run: newman run postman/ProjetWeb.postman_collection.json
+
+      
