@@ -50,13 +50,14 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Install Newman
-        run: npm install -g newman
+      - name: Install Newman and wait-on
+        run: |
+          npm install -g newman wait-on
 
       - name: Start app in background
         run: |
           npm run start:dev &
-          sleep 10
+          wait-on http://localhost:3000/health
 
       - name: Run Postman tests
         run: |
