@@ -25,6 +25,9 @@ jobs:
         ports:
           - 6379:6379
 
+    env:
+      DATABASE_URL: "postgresql://adam:password123@localhost:5432/projetweb"
+
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
