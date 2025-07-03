@@ -7,7 +7,9 @@ import { LoginResponse } from './dto/login-response';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { CurrentUser } from '../auth/decorators/current-user.decorator';
-import { Role } from './enums/role.enum';
+// import { Role } from './enums/role.enum';
+import { Role } from '@prisma/client';
+import { CreateUserInput } from './dto/create-user.input';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -21,7 +23,7 @@ export class UserResolver {
     const users = await this.userService.findAll();
     return users.map((user) => ({
       ...user,
-      role: user.role as Role,
+      role: user.role,
     }));
   }
 
@@ -31,7 +33,7 @@ export class UserResolver {
     if (!user) return null;
     return {
       ...user,
-      role: user.role as Role,
+      role: user.role,
     };
   }
 
@@ -42,6 +44,11 @@ export class UserResolver {
     const user = await this.authService.validateUser(loginInput.email, loginInput.password,);
     if (!user) return null;
     return this.authService.login(user);
+  }
+
+  @Mutation(() => User)
+  async register(@Args('createUserInput') createUserInput: CreateUserInput): Promise<User> {
+    return this.userService.create(createUserInput);
   }
 
   @Query(() => User, { nullable: true })
