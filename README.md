@@ -1,216 +1,431 @@
-# Projet Web - Gestion de Documents
+# Secure Docs - Backend
 
-Application complète de gestion de documents avec backend NestJS et frontend Next.js.
+Plateforme sécurisée de gestion documentaire avec NestJS, GraphQL, Message Queuing, CI/CD et Tests.
 
-## Architecture
+## 🚀 Fonctionnalités
 
-- **Backend** : NestJS avec GraphQL, PostgreSQL, Redis, JWT
-- **Frontend** : Next.js 15 avec TypeScript, Tailwind CSS
-- **Base de données** : PostgreSQL
-- **Cache** : Redis
-- **Containerisation** : Docker & Docker Compose
+- **API GraphQL** avec NestJS (Code First)
+- **Authentification JWT** avec gestion des rôles
+- **Message Queuing** avec BullMQ et Redis
+- **Tests automatisés** (unitaires et intégration)
+- **CI/CD** avec GitHub Actions
+- **Déploiement Docker** avec PostgreSQL
+- **Gestion des documents** (CRUD sécurisé)
 
-## Démarrage rapide du projet
+## 🛠️ Technologies
+
+- **NestJS** - Framework Node.js
+- **GraphQL** - API Query Language
+- **BullMQ** - Message Queue avec Redis
+- **PostgreSQL** - Base de données
+- **Prisma** - ORM
+- **JWT** - Authentification
+- **Jest** - Tests
+- **Docker** - Containerisation
+
+## 📦 Installation
 
 ### Prérequis
 
-- Node.js 22 (utilisez `nvm use 22`)
-- Docker & Docker Compose
-- Yarn
+- Node.js 22
+- Docker et Docker Compose
+- PostgreSQL
+- Redis
 
-### Étapes pour lancer le projet
+### Installation locale
 
-1. **Cloner le dépôt**
-
-   ```bash
-   git clone <url-du-repo>
-   cd Projet-Web
-   ```
-
-2. **Sélectionner la bonne version de Node.js**
-
-   ```bash
-   nvm use 22
-   ```
-
-3. **Installer les dépendances (Backend)**
-
-   ```bash
-   yarn install
-   ```
-
-4. **Installer les dépendances (Frontend)**
-
-   ```bash
-   cd frontend
-   yarn install
-   cd ..
-   ```
-
-5. **Créer le fichier `.env`** à la racine du projet avec :
-
-   ```env
-   DATABASE_URL="postgresql://adam:password123@localhost:5432/projetweb?schema=public"
-   REDIS_URL="redis://:admin@localhost:6379"
-   JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
-   JWT_EXPIRES_IN="1d"
-   ```
-
-6. **Démarrer tous les services avec Docker**
-
-   ```bash
-   docker-compose up -d
-   ```
-
-7. **Appliquer les migrations Prisma**
-
-   ```bash
-   yarn prisma migrate deploy
-   ```
-
-8. **Lancer l'application en mode développement**
-
-   **Backend** (optionnel si Docker est utilisé) :
-
-   ```bash
-   yarn start:dev
-   ```
-
-   **Frontend** :
-
-   ```bash
-   cd frontend
-   yarn dev
-   ```
-
-## Accès aux applications
-
-- **Frontend** : http://localhost:3001
-- **Backend API** : http://localhost:3000
-- **GraphQL Playground** : http://localhost:3000/graphql
-
-## Fonctionnalités
-
-### Backend (NestJS)
-
-- ✅ Authentification JWT
-- ✅ Gestion des utilisateurs avec rôles
-- ✅ Upload et gestion de documents
-- ✅ API GraphQL
-- ✅ Base de données PostgreSQL
-- ✅ Cache Redis
-
-### Frontend (Next.js)
-
-- ✅ Interface d'authentification
-- ✅ Dashboard de gestion des documents
-- ✅ Upload de fichiers
-- ✅ Interface responsive
-- ✅ Gestion des rôles
-
-## Structure du projet
-
-```
-Projet-Web/
-├── src/                    # Backend NestJS
-│   ├── auth/              # Authentification
-│   ├── user/              # Gestion des utilisateurs
-│   ├── document/          # Gestion des documents
-│   └── ...
-├── frontend/              # Frontend Next.js
-│   ├── src/
-│   │   ├── app/           # Pages Next.js
-│   │   ├── components/    # Composants React
-│   │   ├── contexts/      # Contextes React
-│   │   └── lib/           # Services et utilitaires
-│   └── ...
-├── prisma/                # Schéma et migrations DB
-├── docker-compose.yml     # Configuration Docker
-└── README.md
-```
-
-## Développement
-
-### Backend
+1. **Cloner le projet :**
 
 ```bash
-# Lancer en mode développement
+git clone <repository-url>
+cd backend
+```
+
+2. **Installer les dépendances :**
+
+```bash
+yarn install
+```
+
+3. **Configurer l'environnement :**
+
+```bash
+cp .env.example .env
+```
+
+4. **Démarrer les services :**
+
+```bash
+docker-compose up -d
+```
+
+5. **Générer le client Prisma :**
+
+```bash
+npx prisma generate
+```
+
+6. **Exécuter les migrations :**
+
+```bash
+npx prisma migrate dev
+```
+
+7. **Démarrer l'application :**
+
+```bash
 yarn start:dev
+```
 
-# Tests
+L'API sera accessible sur `http://localhost:4000`
+Le playground GraphQL sera accessible sur `http://localhost:4000/graphql`
+
+## 🔐 Authentification
+
+### Endpoints GraphQL
+
+#### Inscription
+
+```graphql
+mutation Register($email: String!, $password: String!, $fullName: String!) {
+  register(email: $email, password: $password, fullName: $fullName) {
+    access_token
+    user {
+      id
+      email
+      fullName
+      role
+    }
+  }
+}
+```
+
+#### Connexion
+
+```graphql
+mutation Login($email: String!, $password: String!) {
+  login(email: $email, password: $password) {
+    access_token
+    user {
+      id
+      email
+      fullName
+      role
+    }
+  }
+}
+```
+
+#### Récupérer l'utilisateur courant
+
+```graphql
+query GetCurrentUser {
+  me {
+    id
+    email
+    fullName
+    role
+    createdAt
+  }
+}
+```
+
+## 📄 Gestion des Documents
+
+### Queries
+
+#### Récupérer mes documents
+
+```graphql
+query GetMyDocuments {
+  myDocuments {
+    id
+    title
+    description
+    fileUrl
+    userId
+    createdAt
+    updatedAt
+    user {
+      id
+      email
+      fullName
+    }
+  }
+}
+```
+
+#### Récupérer un document par ID
+
+```graphql
+query GetDocument($id: String!) {
+  document(id: $id) {
+    id
+    title
+    description
+    fileUrl
+    userId
+    createdAt
+    updatedAt
+    user {
+      id
+      email
+      fullName
+    }
+  }
+}
+```
+
+#### Récupérer tous les documents (Admin)
+
+```graphql
+query GetAllDocuments {
+  documents {
+    id
+    title
+    description
+    fileUrl
+    userId
+    createdAt
+    updatedAt
+    user {
+      id
+      email
+      fullName
+    }
+  }
+}
+```
+
+### Mutations
+
+#### Créer un document
+
+```graphql
+mutation CreateDocument($input: CreateDocumentInput!) {
+  createDocument(createDocumentInput: $input) {
+    id
+    title
+    description
+    fileUrl
+    userId
+    createdAt
+    updatedAt
+  }
+}
+```
+
+#### Mettre à jour un document
+
+```graphql
+mutation UpdateDocument($input: UpdateDocumentInput!) {
+  updateDocument(updateDocumentInput: $input) {
+    id
+    title
+    description
+    fileUrl
+    userId
+    createdAt
+    updatedAt
+  }
+}
+```
+
+#### Supprimer un document
+
+```graphql
+mutation DeleteDocument($id: String!) {
+  removeDocument(id: $id) {
+    id
+    title
+  }
+}
+```
+
+## 🔄 Message Queuing
+
+Le système utilise BullMQ avec Redis pour gérer les événements asynchrones :
+
+- **Création de document** → Job `document.created`
+- **Mise à jour de document** → Job `document.updated`
+- **Suppression de document** → Job `document.deleted`
+
+### Configuration Redis
+
+```yaml
+redis:
+  host: localhost
+  port: 6379
+  password: admin
+```
+
+## 🧪 Tests
+
+### Tests unitaires
+
+```bash
 yarn test
+```
+
+### Tests avec couverture
+
+```bash
+yarn test:cov
+```
+
+### Tests en mode watch
+
+```bash
+yarn test:watch
+```
+
+### Tests e2e
+
+```bash
 yarn test:e2e
-
-# Linter
-yarn lint
 ```
 
-### Frontend
+## 🚀 CI/CD
+
+### GitHub Actions
+
+Le pipeline CI/CD comprend :
+
+1. **Tests** - Lint, tests unitaires, couverture
+2. **Build** - Construction de l'image Docker
+3. **Deploy** - Déploiement automatique sur Render
+
+### Variables d'environnement requises
 
 ```bash
-cd frontend
-
-# Lancer en mode développement
-yarn dev
-
-# Build de production
-yarn build
-
-# Tests
-yarn test
+# GitHub Secrets
+DOCKERHUB_USERNAME=your-dockerhub-username
+DOCKERHUB_TOKEN=your-dockerhub-token
+RENDER_SERVICE_ID=your-render-service-id
+RENDER_API_KEY=your-render-api-key
 ```
 
-## Déploiement
+## 🐳 Docker
 
-### Avec Docker Compose
+### Construction de l'image
 
 ```bash
-# Build et lancement de tous les services
-docker-compose up -d --build
-
-# Voir les logs
-docker-compose logs -f
-
-# Arrêter les services
-docker-compose down
+docker build -t secure-docs-backend .
 ```
+
+### Démarrage avec Docker Compose
+
+```bash
+docker-compose up -d
+```
+
+### Services inclus
+
+- **Backend** - Port 4000
+- **PostgreSQL** - Port 5432
+- **Redis** - Port 6379
+
+## 📊 Monitoring
+
+### Health Check
+
+```bash
+curl http://localhost:4000/health
+```
+
+### Logs
+
+```bash
+# Logs de l'application
+docker-compose logs backend
+
+# Logs Redis
+docker-compose logs redis
+
+# Logs PostgreSQL
+docker-compose logs postgres
+```
+
+## 🔧 Configuration
 
 ### Variables d'environnement
 
-**Backend** (`.env`) :
-
 ```env
-DATABASE_URL="postgresql://adam:password123@localhost:5432/projetweb?schema=public"
-REDIS_URL="redis://:admin@localhost:6379"
-JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
-JWT_EXPIRES_IN="1d"
+# Base de données
+DATABASE_URL=postgresql://efrei_user:efrei_password@localhost:5432/efrei_docs
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+REDIS_PASSWORD=admin
+
+# JWT
+JWT_SECRET=your-super-secret-jwt-key
+
+# Application
+PORT=4000
+NODE_ENV=development
 ```
 
-**Frontend** (`frontend/.env.local`) :
+## 📁 Structure du Projet
 
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3000
+```
+src/
+├── auth/                    # Authentification
+│   ├── guards/             # Guards JWT et rôles
+│   ├── decorators/         # Décorateurs personnalisés
+│   └── jwt.strategy.ts     # Stratégie JWT
+├── document/               # Module documents
+│   ├── dto/               # Data Transfer Objects
+│   ├── entities/          # Entités GraphQL
+│   ├── document.resolver.ts
+│   ├── document.service.ts
+│   └── document-events.processor.ts
+├── user/                   # Module utilisateurs
+│   ├── entities/          # Entités GraphQL
+│   ├── enums/             # Énumérations
+│   └── user.service.ts
+├── health/                 # Health checks
+└── main.ts                 # Point d'entrée
 ```
 
-## Technologies utilisées
+## 🚀 Déploiement
 
-### Backend
+### Render
 
-- NestJS
-- GraphQL (Apollo Server)
-- Prisma ORM
-- PostgreSQL
-- Redis
-- JWT
-- Bull (File uploads)
+1. Connecter le repository GitHub
+2. Configurer les variables d'environnement
+3. Déploiement automatique sur push
 
-### Frontend
+### Heroku
 
-- Next.js 15
-- TypeScript
-- Tailwind CSS
-- React Hook Form
-- Zod
-- Axios
-- Lucide React
-- Radix UI
+```bash
+heroku create secure-docs-backend
+heroku addons:create heroku-postgresql
+heroku addons:create heroku-redis
+git push heroku main
+```
+
+## 📝 API Documentation
+
+La documentation complète de l'API GraphQL est disponible via le playground :
+`http://localhost:4000/graphql`
+
+## 🤝 Contribution
+
+1. Fork le projet
+2. Créer une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Commit les changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrir une Pull Request
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
+
+## 👥 Équipe
+
+- **Développeur 1** - Backend & GraphQL
+- **Développeur 2** - Tests & CI/CD
+- **Développeur 3** - Frontend & UI
+- **Développeur 4** - DevOps & Déploiement

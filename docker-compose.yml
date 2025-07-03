@@ -1,22 +1,54 @@
 services:
   redis:
-    image: redis
-    command: ["redis-server", "--requirepass", "admin"]
+    image: redis:7-alpine
+    container_name: efrei-redis
     ports:
-      - "6379:6379"
+      - '6379:6379'
+    environment:
+      - REDIS_PASSWORD=admin
+    command: redis-server --requirepass admin
+    volumes:
+      - redis_data:/data
+    networks:
+      - efrei-network
 
   postgres:
-    image: postgres
-    restart: always
-    container_name: projetweb-db
+    image: postgres:15-alpine
+    container_name: efrei-postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     environment:
-      POSTGRES_USER: adam
-      POSTGRES_PASSWORD: password123
-      POSTGRES_DB: projetweb
+      POSTGRES_DB: efrei_docs
+      POSTGRES_USER: efrei_user
+      POSTGRES_PASSWORD: efrei_password
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - efrei-network
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: efrei-backend
+    ports:
+      - '4000:4000'
+    environment:
+      - DATABASE_URL=postgresql://efrei_user:efrei_password@postgres:5432/efrei_docs
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=admin
+      - JWT_SECRET=your-super-secret-jwt-key
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - efrei-network
 
 volumes:
-  db-data:
+  redis_data:
+  postgres_data:
+
+networks:
+  efrei-network:
+    driver: bridge

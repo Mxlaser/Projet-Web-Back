@@ -1,15 +1,68 @@
-import { Processor, Process } from '@nestjs/bull';
+import { Process, Processor } from '@nestjs/bull';
+import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
 
-@Processor('document-events')
+interface DocumentEvent {
+  documentId: string;
+  userId: string;
+  action: 'created' | 'updated' | 'deleted';
+  timestamp: Date;
+}
+
+@Processor('documents')
 export class DocumentEventsProcessor {
-  @Process('created')
-  handleCreated(job: Job) {
-    console.log('📄 Document créé :', job.data);
+  private readonly logger = new Logger(DocumentEventsProcessor.name);
+
+  @Process('document.created')
+  async handleDocumentCreated(job: Job<DocumentEvent>) {
+    const { documentId, userId, action, timestamp } = job.data;
+
+    this.logger.log(
+      `Document ${action}: ID=${documentId}, UserID=${userId}, Time=${timestamp}`,
+    );
+
+    // Simulation d'un traitement asynchrone (audit, analytics, etc.)
+    await this.simulateAsyncProcessing();
+
+    this.logger.log(
+      `Document ${action} processing completed for ID: ${documentId}`,
+    );
   }
 
-  @Process('deleted')
-  handleDeleted(job: Job) {
-    console.log('🗑️ Document supprimé :', job.data);
+  @Process('document.updated')
+  async handleDocumentUpdated(job: Job<DocumentEvent>) {
+    const { documentId, userId, action, timestamp } = job.data;
+
+    this.logger.log(
+      `Document ${action}: ID=${documentId}, UserID=${userId}, Time=${timestamp}`,
+    );
+
+    // Simulation d'un traitement asynchrone (audit, analytics, etc.)
+    await this.simulateAsyncProcessing();
+
+    this.logger.log(
+      `Document ${action} processing completed for ID: ${documentId}`,
+    );
+  }
+
+  @Process('document.deleted')
+  async handleDocumentDeleted(job: Job<DocumentEvent>) {
+    const { documentId, userId, action, timestamp } = job.data;
+
+    this.logger.log(
+      `Document ${action}: ID=${documentId}, UserID=${userId}, Time=${timestamp}`,
+    );
+
+    // Simulation d'un traitement asynchrone (audit, analytics, etc.)
+    await this.simulateAsyncProcessing();
+
+    this.logger.log(
+      `Document ${action} processing completed for ID: ${documentId}`,
+    );
+  }
+
+  private async simulateAsyncProcessing(): Promise<void> {
+    // Simulation d'un traitement qui prend du temps
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   }
 }

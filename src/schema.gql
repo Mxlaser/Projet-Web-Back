@@ -28,20 +28,31 @@ type Document {
   description: String!
   fileUrl: String!
   userId: String!
+  user: User!
+  createdAt: DateTime!
+  updatedAt: DateTime!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Query {
   hello: HelloResponse!
   users: [User!]!
   user(id: String!): User
   me: User
-  getDocumentsByUser(userId: String!): [Document!]!
+  documents: [Document!]!
+  myDocuments: [Document!]!
+  document(id: String!): Document!
 }
 
 type Mutation {
   login(loginInput: LoginInput!): LoginResponse
-  createDocument(input: CreateDocumentInput!, userId: String!): Document!
-  deleteDocument(id: String!): Boolean!
+  createDocument(createDocumentInput: CreateDocumentInput!): Document!
+  updateDocument(updateDocumentInput: UpdateDocumentInput!): Document!
+  removeDocument(id: String!): Document!
 }
 
 input LoginInput {
@@ -52,4 +63,11 @@ input CreateDocumentInput {
   title: String!
   description: String!
   fileUrl: String!
+}
+
+input UpdateDocumentInput {
+  title: String
+  description: String
+  fileUrl: String
+  id: String!
 }

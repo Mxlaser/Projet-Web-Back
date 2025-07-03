@@ -1,0 +1,354 @@
+{
+  "info": {
+    "name": "Secure Docs API",
+    "description": "Collection de tests pour l'API GraphQL Secure Docs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:4000",
+      "type": "string"
+    },
+    {
+      "key": "accessToken",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{accessToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation Register($email: String!, $password: String!, $fullName: String!) {\\n    register(email: $email, password: $password, fullName: $fullName) {\\n      access_token\\n      user {\\n        id\\n        email\\n        fullName\\n        role\\n      }\\n    }\\n  }\",\n  \"variables\": {\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"fullName\": \"Test User\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.register) {",
+                  "        pm.collectionVariables.set('accessToken', response.data.register.access_token);",
+                  "        console.log('Token saved:', response.data.register.access_token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation Login($email: String!, $password: String!) {\\n    login(email: $email, password: $password) {\\n      access_token\\n      user {\\n        id\\n        email\\n        fullName\\n        role\\n      }\\n    }\\n  }\",\n  \"variables\": {\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.data && response.data.login) {",
+                  "        pm.collectionVariables.set('accessToken', response.data.login.access_token);",
+                  "        console.log('Token saved:', response.data.login.access_token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query GetCurrentUser {\\n    me {\\n      id\\n      email\\n      fullName\\n      role\\n      createdAt\\n    }\\n  }\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "Create Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation CreateDocument($input: CreateDocumentInput!) {\\n    createDocument(createDocumentInput: $input) {\\n      id\\n      title\\n      description\\n      fileUrl\\n      userId\\n      createdAt\\n      updatedAt\\n    }\\n  }\",\n  \"variables\": {\n    \"input\": {\n      \"title\": \"Test Document\",\n      \"description\": \"This is a test document\",\n      \"fileUrl\": \"https://example.com/test.pdf\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Document created successfully', function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data.createDocument).to.have.property('id');",
+                  "    pm.expect(response.data.createDocument.title).to.eql('Test Document');",
+                  "    pm.collectionVariables.set('documentId', response.data.createDocument.id);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get My Documents",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query GetMyDocuments {\\n    myDocuments {\\n      id\\n      title\\n      description\\n      fileUrl\\n      userId\\n      createdAt\\n      updatedAt\\n      user {\\n        id\\n        email\\n        fullName\\n      }\\n    }\\n  }\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Returns array of documents', function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data.myDocuments).to.be.an('array');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get Document by ID",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query GetDocument($id: String!) {\\n    document(id: $id) {\\n      id\\n      title\\n      description\\n      fileUrl\\n      userId\\n      createdAt\\n      updatedAt\\n      user {\\n        id\\n        email\\n        fullName\\n      }\\n    }\\n  }\",\n  \"variables\": {\n    \"id\": \"{{documentId}}\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Returns correct document', function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data.document.id).to.eql(pm.collectionVariables.get('documentId'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Update Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation UpdateDocument($input: UpdateDocumentInput!) {\\n    updateDocument(updateDocumentInput: $input) {\\n      id\\n      title\\n      description\\n      fileUrl\\n      userId\\n      createdAt\\n      updatedAt\\n    }\\n  }\",\n  \"variables\": {\n    \"input\": {\n      \"id\": \"{{documentId}}\",\n      \"title\": \"Updated Document Title\",\n      \"description\": \"Updated description\"\n    }\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Document updated successfully', function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data.updateDocument.title).to.eql('Updated Document Title');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"mutation DeleteDocument($id: String!) {\\n    removeDocument(id: $id) {\\n      id\\n      title\\n    }\\n  }\",\n  \"variables\": {\n    \"id\": \"{{documentId}}\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Document deleted successfully', function () {",
+                  "    const response = pm.response.json();",
+                  "    pm.expect(response.data.removeDocument.id).to.eql(pm.collectionVariables.get('documentId'));",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin Operations",
+      "item": [
+        {
+          "name": "Get All Documents (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"query GetAllDocuments {\\n    documents {\\n      id\\n      title\\n      description\\n      fileUrl\\n      userId\\n      createdAt\\n      updatedAt\\n      user {\\n        id\\n        email\\n        fullName\\n      }\\n    }\\n  }\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/graphql",
+              "host": ["{{baseUrl}}"],
+              "path": ["graphql"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,4 +1,5 @@
-import { Field, ObjectType, ID } from '@nestjs/graphql';
+import { Field, ID, ObjectType } from '@nestjs/graphql';
+import { User } from '../../user/entities/user.entity';
 
 @ObjectType()
 export class Document {
@@ -16,4 +17,13 @@ export class Document {
 
   @Field()
   userId: string;
+
+  @Field(() => User)
+  user?: User;
+
+  @Field()
+  createdAt: Date;
+
+  @Field()
+  updatedAt: Date;
 }
