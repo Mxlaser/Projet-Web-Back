@@ -1,216 +1,145 @@
-# Projet Web – Gestion de Documents
 
-Application complète de gestion de documents avec authentification, upload, et rôles utilisateur. Basée sur **NestJS (GraphQL)** en backend et **Next.js 15** en frontend.
+# 📁 Backend – Gestion de Documents
 
-## 🧩 Technologies
+API GraphQL réalisée avec **NestJS**, **PostgreSQL**, **Prisma**, **Redis**, **BullMQ**, **JWT**.
 
-### Backend
-- NestJS + GraphQL (code-first)
-- Prisma ORM + PostgreSQL
-- Redis + BullMQ
-- JWT Auth (Passport)
-- Docker / CI GitHub Actions
+## 🚀 Fonctionnalités
 
-### Frontend
-- Next.js 15 + App Router
-- TypeScript + Tailwind CSS
-- React Hook Form + Zod
-- Axios + Lucide + Radix UI
+- Authentification (JWT)
+- Inscription et connexion
+- Gestion des rôles (ADMIN / USER)
+- Création, suppression et affichage de documents
+- File d’attente BullMQ (Redis)
+- Tests unitaires & e2e
+- CI/CD avec GitHub Actions
 
----
+## 📦 Technologies principales
+
+- **NestJS** (GraphQL, Modules, Services)
+- **Prisma ORM**
+- **PostgreSQL**
+- **Redis** (BullMQ)
+- **JWT**
+- **Docker / Docker Compose**
+- **Jest** pour les tests
+- **ESLint** pour la qualité de code
 
 ## ⚙️ Prérequis
 
-- Node.js 22 (via `nvm use 22  # (ou utilisez votre version de Node)`)
-- Yarn
+- Node.js 22
+- npm
 - Docker & Docker Compose
+- Prisma CLI (`npm install -g prisma`)
 
----
-
-## 🚀 Lancement du projet
+## 🧪 Lancer le projet en local
 
 ### 1. Cloner le repo
 
 ```bash
-git clone <repo-url>
+git clone <url-du-repo>
 cd Projet-Web
 ```
 
 ### 2. Installer les dépendances
 
 ```bash
-# Backend
 npm install
-
-# Frontend
-cd frontend
-npm install
-cd ..
 ```
 
-### 3. Configurer les fichiers `.env`
+### 3. Configurer les variables d’environnement
 
-**Backend** – `.env` à la racine :
+Créer un fichier `.env` à la racine :
 
 ```env
 DATABASE_URL="postgresql://adam:password123@localhost:5432/projetweb?schema=public"
 REDIS_URL="redis://:admin@localhost:6379"
-JWT_SECRET="your-super-secret-jwt-key-change-this-in-production"
+JWT_SECRET="super-secret"
 JWT_EXPIRES_IN="1d"
 ```
 
-**Frontend** – `frontend/.env.local` :
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:3000
-```
-
----
-
-### 4. Lancer tous les services
+### 4. Lancer les services via Docker
 
 ```bash
 docker-compose up -d
 ```
 
----
+Cela lance :
+
+- PostgreSQL (port 5432)
+- Redis (port 6379)
 
 ### 5. Appliquer les migrations Prisma
 
 ```bash
-yarn prisma migrate deploy
+npx prisma migrate deploy
 ```
 
----
-
-### 6. Lancer les apps
-
-**Backend** :
+## ▶️ Démarrage du serveur
 
 ```bash
-npm start:dev
+npm run start:dev
 ```
 
-**Frontend** :
+Le serveur sera accessible sur :  
+📍 `http://localhost:3000`
+
+Et GraphQL Playground sur :  
+📍 `http://localhost:3000/graphql`
+
+## 🧪 Tester l'API (GraphQL)
+
+Utilisez Postman ou GraphQL Playground pour :
+
+- `register`
+- `login`
+- `createDocument`
+- `getDocumentsByUser`
+- `deleteDocument`
+
+Ajoutez le token JWT dans les headers :
+
+```http
+Authorization: Bearer VOTRE_TOKEN
+```
+
+## ✅ Scripts utiles
 
 ```bash
-cd frontend
-npm run dev
+npm run start:dev       # Lancer le serveur en dev
+npm run lint            # Linter le code
+npm run test            # Lancer les tests unitaires
+npm run test:e2e        # Lancer les tests e2e
+npm run build           # Build de production
 ```
 
----
+## 🔁 Tests Postman avec Newman
 
-## 🔗 Accès
-
-- **Frontend** : http://localhost:3001
-- **Backend API** : http://localhost:3000
-- **GraphQL Playground** : http://localhost:3000/graphql
-
----
-
-## 🧪 Tests
-
-### Backend
+Exporter votre collection Postman dans `postman/ProjetWeb.postman_collection.json`, puis :
 
 ```bash
-npm run test           # tests unitaires
-npm run test:e2e       # tests end-to-end
-npm run lint           # analyse statique
+npm install -g newman
+newman run postman/ProjetWeb.postman_collection.json
 ```
 
-### Frontend
+## 🧪 CI/CD (GitHub Actions)
 
-```bash
-npm run test
+Le workflow CI :
+
+- Lance `npm install`
+- Génère le client Prisma
+- Exécute `npm run lint`
+- Exécute `npm run test`
+- Démarre le projet
+- Lance les tests Postman avec Newman
+
+## 🗃️ Structure du projet
+
 ```
-
----
-
-## 📁 Structure du projet
-
+src/
+├── auth/           # Authentification JWT
+├── user/           # Utilisateurs
+├── document/       # Documents
+├── health/         # Monitoring
+├── prisma/         # Prisma client et migrations
+└── main.ts         # Point d’entrée de l’app
 ```
-Projet-Web/
-├── src/                    # Backend (NestJS)
-│   ├── auth/
-│   ├── user/
-│   ├── document/
-│   └── ...
-├── frontend/               # Frontend (Next.js)
-│   └── src/
-│       ├── app/            # Pages et routes
-│       ├── components/     # UI réutilisable
-│       ├── contexts/       # Context API
-│       └── lib/            # Services/API
-├── prisma/                 # Schéma DB
-├── postman/                # Collection API
-├── docker-compose.yml
-└── README.md
-```
-
----
-
-## 🧪 API GraphQL
-
-### 🔐 Auth
-
-- `register(createUserInput)`
-- `login(loginInput): LoginResponse`
-- `me()`
-
-### 📄 Documents
-
-- `createDocument(input, userId)`
-- `getDocumentsByUser(userId)`
-- `deleteDocument(id)`
-
-> ⚠️ Toutes les mutations sauf `login` et `register` nécessitent un token JWT (`Authorization: Bearer xxx`)
-
----
-
-## 📬 Tests Postman / Newman
-
-1. Importe la collection `postman/ProjetWeb.postman_collection.json` dans Postman
-2. Exécute via Newman :
-```bash
-npx newman run postman/ProjetWeb.postman_collection.json
-```
-
----
-
-## 🐳 Docker
-
-### Build et run
-
-```bash
-docker-compose up -d --build
-```
-
-### Stopper
-
-```bash
-docker-compose down
-```
-
----
-
-## ✅ CI GitHub Actions
-
-- Lint, test et build à chaque push/pull_request
-- Tests Postman automatisés
-- Vérification du serveur GraphQL
-
----
-
-## 🙋‍♂️ Auteurs
-
-- Dev 1 : Backend API / Auth / Base de données
-- Dev 2 : Asynchrone, Redis, BullMQ, Tests, CI/CD
-- Dev 3 : Frontend Next.js, Auth UI, Upload UI, Intégration API
-
----
-
-## 📌 Remarques
-
-- Le mot de passe est hashé avec `bcrypt`
-- La base est persistée via volume Docker
-- Le token JWT expire selon `JWT_EXPIRES_IN` (ex : `1d`)
