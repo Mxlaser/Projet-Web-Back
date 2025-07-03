@@ -14,8 +14,8 @@ type User {
 }
 
 enum Role {
-  USER
   ADMIN
+  USER
 }
 
 type LoginResponse {
@@ -46,6 +46,7 @@ type Query {
 
 type Mutation {
   login(loginInput: LoginInput!): LoginResponse
+  register(createUserInput: CreateUserInput!): User!
   createDocument(input: CreateDocumentInput!, userId: String!): Document!
   deleteDocument(id: String!): Boolean!
 }
@@ -53,6 +54,12 @@ type Mutation {
 input LoginInput {
   email: String!
   password: String!
+}
+
+input CreateUserInput {
+  email: String!
+  password: String!
+  fullName: String!
 }
 
 input CreateDocumentInput {
