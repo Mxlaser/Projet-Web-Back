@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { DocumentService } from './document.service';
+import { PrismaService } from '../../prisma/prisma.service';
 
 describe('DocumentService', () => {
   let service: DocumentService;
@@ -9,11 +10,7 @@ describe('DocumentService', () => {
       providers: [
         DocumentService,
         {
-          provide: 'BullQueue_document-events',
-          useValue: { add: jest.fn() },
-        },
-        {
-          provide: 'PrismaService',
+          provide: PrismaService,
           useValue: {
             document: {
               create: jest.fn(),
@@ -21,6 +18,12 @@ describe('DocumentService', () => {
               findUnique: jest.fn(),
               delete: jest.fn(),
             },
+          },
+        },
+        {
+          provide: 'BullQueue_document-events',
+          useValue: {
+            add: jest.fn(),
           },
         },
       ],
