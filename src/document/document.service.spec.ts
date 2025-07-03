@@ -12,6 +12,17 @@ describe('DocumentService', () => {
           provide: 'BullQueue_document-events',
           useValue: { add: jest.fn() },
         },
+        {
+          provide: 'PrismaService',
+          useValue: {
+            document: {
+              create: jest.fn(),
+              findMany: jest.fn(),
+              findUnique: jest.fn(),
+              delete: jest.fn(),
+            },
+          },
+        },
       ],
     }).compile();
 
