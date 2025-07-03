@@ -39,7 +39,7 @@ export class UserResolver {
   async login(
     @Args('loginInput') loginInput: LoginInput,
   ): Promise<LoginResponse | null> {
-    const user = await this.authService.validateUser(loginInput.email);
+    const user = await this.authService.validateUser(loginInput.email, loginInput.password,);
     if (!user) return null;
     return this.authService.login(user);
   }

@@ -28,7 +28,13 @@ type Document {
   description: String!
   fileUrl: String!
   userId: String!
+  createdAt: DateTime!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Query {
   hello: HelloResponse!
@@ -46,6 +52,7 @@ type Mutation {
 
 input LoginInput {
   email: String!
+  password: String!
 }
 
 input CreateDocumentInput {

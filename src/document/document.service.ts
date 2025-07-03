@@ -1,29 +1,26 @@
 import { Injectable, ForbiddenException } from '@nestjs/common';
 import { CreateDocumentInput } from './dto/create-document.input';
 import { Document } from './entities/document.entity';
-import { v4 as uuidv4 } from 'uuid';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
+import { PrismaService } from '../../prisma/prisma.service';
 
 @Injectable()
 export class DocumentService {
-  private documents: Document[] = [];
-
   constructor(
+    private readonly prisma: PrismaService,
     @InjectQueue('document-events') private readonly eventQueue: Queue,
   ) {}
 
-  async createDocument(
-    input: CreateDocumentInput,
-    userId: string,
-  ): Promise<Document> {
-    const newDoc: Document = {
-      id: uuidv4(),
-      ...input,
-      userId,
-    };
-
-    this.documents.push(newDoc);
+  async createDocument(input: CreateDocumentInput, userId: string): Promise<Document> {
+    const newDoc = await this.prisma.document.create({
+      data: {
+        title: input.title,
+        description: input.description,
+        fileUrl: input.fileUrl,
+        userId,
+      },
+    });
 
     await this.eventQueue.add('created', {
       documentId: newDoc.id,
@@ -35,29 +32,29 @@ export class DocumentService {
     return newDoc;
   }
 
-  getDocumentsByUser(userId: string): Document[] {
-    return this.documents.filter((doc) => doc.userId === userId);
+  async getDocumentsByUser(userId: string): Promise<Document[]> {
+    return this.prisma.document.findMany({
+      where: { userId },
+    });
   }
 
-  async deleteDocument(
-    id: string,
-    currentUserId: string,
-    currentUserRole: string,
-  ): Promise<boolean> {
-    const doc = this.documents.find((d) => d.id === id);
+  async deleteDocument(id: string, currentUserId: string, currentUserRole: string): Promise<boolean> {
+    const doc = await this.prisma.document.findUnique({
+      where: { id },
+    });
+
     if (!doc) return false;
 
     const isOwner = doc.userId === currentUserId;
-    const isAdmin = currentUserRole === 'admin';
+    const isAdmin = currentUserRole === 'ADMIN';
 
     if (!isOwner && !isAdmin) {
-      const error = new Error("Vous n'avez pas le droit de supprimer ce document.");
-      error.name = 'ForbiddenError';
-      throw error;
+      throw new ForbiddenException("Vous n'avez pas le droit de supprimer ce document.");
     }
 
-
-    this.documents = this.documents.filter((d) => d.id !== id);
+    await this.prisma.document.delete({
+      where: { id },
+    });
 
     await this.eventQueue.add('deleted', {
       documentId: doc.id,

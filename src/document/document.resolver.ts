@@ -16,9 +16,10 @@ type CurrentUserType = {
 export class DocumentResolver {
   constructor(private readonly documentService: DocumentService) {}
 
-  @Query(() => [Document])
-  getDocumentsByUser(@Args('userId') userId: string): Document[] {
-    return this.documentService.getDocumentsByUser(userId);
+  @Query(() => [Document]) async getDocumentsByUser(
+    @Args('userId') userId: string,
+  ): Promise<Document[]> {
+    return await this.documentService.getDocumentsByUser(userId); // ✅ ici
   }
 
   @Mutation(() => Document)
