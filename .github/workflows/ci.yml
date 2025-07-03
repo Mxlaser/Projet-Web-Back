@@ -10,6 +10,9 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
 
+    env:
+      JWT_SECRET: my-secret-key  # 🔐 requis pour JwtStrategy
+
     services:
       postgres:
         image: postgres
@@ -50,15 +53,13 @@ jobs:
       - name: Build project
         run: npm run build
 
-      - name: Install Newman and wait-on
-        run: |
-          npm install -g newman wait-on
+      - name: Install Newman
+        run: npm install -g newman
 
       - name: Start app in background
         run: |
           npm run start:dev &
-          wait-on http://localhost:3000/health
+          sleep 10
 
       - name: Run Postman tests
-        run: |
-          newman run postman/ProjetWeb.postman_collection.json
+        run: newman run postman/ProjetWeb.postman_collection.json
