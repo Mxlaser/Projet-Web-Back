@@ -10,9 +10,6 @@ jobs:
   build-test:
     runs-on: ubuntu-latest
 
-    env:
-      JWT_SECRET: my-secret-key  # 🔐 requis pour JwtStrategy
-
     services:
       postgres:
         image: postgres
@@ -43,6 +40,9 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Apply database migrations
+        run: npx prisma migrate deploy
+
       - name: Lint (ne bloque pas la CI)
         run: |
           npm run lint || echo "❗ ESLint a détecté des erreurs, mais la CI continue."
@@ -58,8 +58,11 @@ jobs:
 
       - name: Start app in background
         run: |
-          npm run start:dev &
-          sleep 10
+          npm run start:dev > app.log 2>&1 &
+          for i in {1..30}; do
+            nc -z localhost 3000 && echo "✅ Server is up!" && break
+            echo "⏳ Waiting for server to be ready..." && sleep 1
+          done
 
       - name: Run Postman tests
         run: newman run postman/ProjetWeb.postman_collection.json
