@@ -18,6 +18,7 @@ model User {
   password  String
   fullName  String
   role      Role
+  password String
   documents Document[]
   createdAt DateTime  @default(now())
 }

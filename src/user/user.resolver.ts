@@ -108,6 +108,11 @@ export class UserResolver {
     };
   }
 
+  @Mutation(() => User)
+  async register(@Args('createUserInput') createUserInput: CreateUserInput): Promise<User> {
+    return this.userService.create(createUserInput);
+  }
+
   @Query(() => User, { nullable: true })
   @UseGuards(JwtAuthGuard)
   async me(@CurrentUser() user: { userId: string }): Promise<User | null> {

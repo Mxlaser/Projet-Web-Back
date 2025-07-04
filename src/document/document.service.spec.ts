@@ -6,6 +6,7 @@ import { UserService } from '../user/user.service';
 import { DocumentService } from './document.service';
 import { CreateDocumentInput } from './dto/create-document.input';
 import { UpdateDocumentInput } from './dto/update-document.input';
+import { PrismaService } from '../../prisma/prisma.service';
 
 describe('DocumentService', () => {
   let service: DocumentService;
@@ -43,13 +44,20 @@ describe('DocumentService', () => {
       providers: [
         DocumentService,
         {
-          provide: getQueueToken('documents'),
-          useValue: mockQueue,
+          provide: PrismaService,
+          useValue: {
+            document: {
+              create: jest.fn(),
+              findMany: jest.fn(),
+              findUnique: jest.fn(),
+              delete: jest.fn(),
+            },
+          },
         },
         {
-          provide: UserService,
+          provide: 'BullQueue_document-events',
           useValue: {
-            findOne: jest.fn().mockResolvedValue(mockUser),
+            add: jest.fn(),
           },
         },
       ],
