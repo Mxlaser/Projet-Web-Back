@@ -24,7 +24,7 @@ export class DocumentResolver {
 
   @Query(() => [Document], { name: 'documents' })
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @Roles(Role.USER, Role.ADMIN)
   findAll() {
     return this.documentService.findAll();
   }

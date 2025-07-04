@@ -14,10 +14,14 @@ import { Document } from './entities/document.entity';
 
 @Injectable()
 export class DocumentService {
+
+  private documents: Document[];
   constructor(
     @InjectQueue('documents') private documentsQueue: Queue,
     private userService: UserService,
-  ) {}
+  ) {
+    this.documents = [];
+  }
 
   async create(
     createDocumentInput: CreateDocumentInput,

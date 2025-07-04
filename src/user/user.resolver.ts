@@ -9,6 +9,7 @@ import { RegisterInput } from './dto/register.input';
 import { User } from './entities/user.entity';
 import { Role } from './enums/role.enum';
 import { UserService } from './user.service';
+import { User as PrismaUser } from '@prisma/client';
 
 @Resolver(() => User)
 export class UserResolver {
@@ -42,7 +43,7 @@ export class UserResolver {
   async login(
     @Args('loginInput') loginInput: LoginInput,
   ): Promise<LoginResponse> {
-    const user = await this.authService.validateUser(loginInput.email);
+    const user = await this.authService.validateUser(loginInput.email, loginInput.password);
     if (!user) {
       throw new Error('Invalid credentials');
     }
@@ -81,8 +82,7 @@ export class UserResolver {
     const newUser = await this.userService.create({
       email: registerInput.email,
       password: registerInput.password,
-      fullName: registerInput.fullName,
-      role: Role.USER,
+      fullName: registerInput.fullName
     });
 
     // Convertir pour le service d'auth
@@ -91,8 +91,9 @@ export class UserResolver {
       email: newUser.email,
       fullName: newUser.fullName,
       role: newUser.role as Role,
+      password: newUser.password,
       createdAt: newUser.createdAt.toISOString(),
-    };
+    } as User & PrismaUser;
 
     const { access_token } = this.authService.login(authUser);
 
@@ -106,11 +107,6 @@ export class UserResolver {
         createdAt: newUser.createdAt.toISOString(),
       },
     };
-  }
-
-  @Mutation(() => User)
-  async register(@Args('createUserInput') createUserInput: CreateUserInput): Promise<User> {
-    return this.userService.create(createUserInput);
   }
 
   @Query(() => User, { nullable: true })
