@@ -41,7 +41,10 @@ export class DocumentResolver {
     @Args('id', { type: () => String }) id: string,
     @CurrentUser() user: User,
   ) {
-    return this.documentService.findOne(id, user);
+    return this.documentService.findOne(id, {
+      userId: user.id,
+      role: user.role,
+    });
   }
 
   @Mutation(() => Document)
@@ -50,7 +53,10 @@ export class DocumentResolver {
     @Args('createDocumentInput') createDocumentInput: CreateDocumentInput,
     @CurrentUser() user: User,
   ) {
-    return this.documentService.create(createDocumentInput, user);
+    return this.documentService.create(createDocumentInput, {
+      userId: user.id,
+      role: user.role,
+    });
   }
 
   @Mutation(() => Document)
@@ -62,7 +68,10 @@ export class DocumentResolver {
     return this.documentService.update(
       updateDocumentInput.id,
       updateDocumentInput,
-      user,
+      {
+        userId: user.id,
+        role: user.role,
+      },
     );
   }
 
@@ -72,7 +81,10 @@ export class DocumentResolver {
     @Args('id', { type: () => String }) id: string,
     @CurrentUser() user: User,
   ) {
-    return this.documentService.remove(id, user);
+    return this.documentService.remove(id, {
+      userId: user.id,
+      role: user.role,
+    });
   }
 
   @ResolveField(() => User)
