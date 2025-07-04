@@ -147,6 +147,10 @@ export class DocumentService {
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
-    return user as User;
+    return {
+      ...user,
+      role: user.role as Role,
+      createdAt: user.createdAt.toISOString(),
+    };
   }
 }

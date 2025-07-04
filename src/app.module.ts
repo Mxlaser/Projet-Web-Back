@@ -19,7 +19,7 @@ import { DocumentModule } from './document/document.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       playground: true,
-      context: ({ req }) => ({ req }),
+      context: ({ req }: { req: Request }) => ({ req }),
     }),
     UserModule,
     AuthModule,

@@ -18,6 +18,10 @@ export class UserService {
   }
 
   async findOne(id: string) {
+    if (!id) {
+      throw new Error('User ID is required');
+    }
+    
     return this.prisma.user.findUnique({
       where: { id },
     });

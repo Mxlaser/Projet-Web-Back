@@ -11,6 +11,7 @@ type User {
   email: String!
   fullName: String!
   role: Role!
+  createdAt: String!
 }
 
 enum Role {
@@ -20,6 +21,7 @@ enum Role {
 
 type LoginResponse {
   access_token: String!
+  user: User!
 }
 
 type Document {
@@ -49,7 +51,8 @@ type Query {
 }
 
 type Mutation {
-  login(loginInput: LoginInput!): LoginResponse
+  login(loginInput: LoginInput!): LoginResponse!
+  register(registerInput: RegisterInput!): LoginResponse!
   createDocument(createDocumentInput: CreateDocumentInput!): Document!
   updateDocument(updateDocumentInput: UpdateDocumentInput!): Document!
   removeDocument(id: String!): Document!
@@ -57,6 +60,13 @@ type Mutation {
 
 input LoginInput {
   email: String!
+  password: String!
+}
+
+input RegisterInput {
+  email: String!
+  password: String!
+  fullName: String!
 }
 
 input CreateDocumentInput {

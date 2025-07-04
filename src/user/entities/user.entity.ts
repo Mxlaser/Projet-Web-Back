@@ -14,6 +14,9 @@ export class User {
 
   @Field(() => Role)
   role: Role;
+
+  @Field()
+  createdAt: string;
 }
 
 registerEnumType(Role, {

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserService } from '../user/user.service';
 import { User } from '../user/entities/user.entity';
 import { Role } from '../user/enums/role.enum';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +18,7 @@ export class AuthService {
     return {
       ...user,
       role: user.role as Role,
+      createdAt: user.createdAt.toISOString(),
     };
   }
 
