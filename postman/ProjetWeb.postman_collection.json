@@ -27,12 +27,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/graphql",
+					"raw": "http://localhost:4000/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "4000",
 					"path": [
 						"graphql"
 					]
@@ -56,12 +56,12 @@
 					"raw": "{\r\n  \"query\": \"mutation Register($data: CreateUserInput!) { register(createUserInput: $data) { id email fullName role } }\",\r\n  \"variables\": {\r\n    \"data\": {\r\n      \"email\": \"test@example.com\",\r\n      \"password\": \"12345678\",\r\n      \"fullName\": \"Test User\"\r\n    }\r\n  }\r\n}"
 				},
 				"url": {
-					"raw": "http://localhost:3000/graphql",
+					"raw": "http://localhost:4000/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "4000",
 					"path": [
 						"graphql"
 					]
@@ -95,12 +95,12 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:3000/graphql",
+					"raw": "http://localhost:4000/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "4000",
 					"path": [
 						"graphql"
 					]
@@ -129,12 +129,12 @@
 					"raw": "{\r\n  \"query\": \"query GetDocs($userId: String!) { getDocumentsByUser(userId: $userId) { id title description fileUrl createdAt } }\",\r\n  \"variables\": {\r\n    \"userId\": \"35fabe0c-49de-4cbc-907b-64ecc012a6e5\"\r\n  }\r\n}\r\n\r\n"
 				},
 				"url": {
-					"raw": "http://localhost:3000/graphql",
+					"raw": "http://localhost:4000/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "4000",
 					"path": [
 						"graphql"
 					]
@@ -163,12 +163,12 @@
 					"raw": "{\r\n  \"query\": \"mutation DeleteDoc($id: String!) { deleteDocument(id: $id) }\",\r\n  \"variables\": {\r\n    \"id\": \"0ece4cdb-9a2e-4876-9816-78319ab0d867\"\r\n  }\r\n}\r\n"
 				},
 				"url": {
-					"raw": "http://localhost:3000/graphql",
+					"raw": "http://localhost:4000/graphql",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "3000",
+					"port": "4000",
 					"path": [
 						"graphql"
 					]

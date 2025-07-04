@@ -81,10 +81,10 @@ npm run start:dev
 ```
 
 Le serveur sera accessible sur :  
-📍 `http://localhost:3000`
+📍 `http://localhost:4000`
 
 Et GraphQL Playground sur :  
-📍 `http://localhost:3000/graphql`
+📍 `http://localhost:4000/graphql`
 
 ## 🧪 Tester l'API (GraphQL)
 
